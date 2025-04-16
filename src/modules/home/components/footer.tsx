@@ -1,10 +1,22 @@
+"use client";
+
+import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { FOOTER_LINKS } from "../constants";
 import { NewLetter } from "./new-letter";
 
-export const Footer = () => {
+type Props = {
+    variant?: "light" | "dark";
+};
+
+export const Footer = ({ variant = "light" }: Props) => {
     return (
-        <footer className="border-t border-gray-200 bg-[#f2f4f8] py-16">
+        <footer
+            className={cn(
+                "border-t border-gray-200 bg-[#f2f4f8] py-16",
+                variant === "dark" && "border-gray-600 bg-[#0D0D0D] text-white",
+            )}
+        >
             <div className="mx-auto max-w-7xl px-6">
                 <div className="flex flex-col md:flex-row">
                     <NewLetter />
@@ -17,7 +29,11 @@ export const Footer = () => {
                                         <li key={link.href}>
                                             <Link
                                                 href={link.href}
-                                                className="text-gray-600 hover:text-black"
+                                                className={cn(
+                                                    "text-gray-600 hover:text-black",
+                                                    variant === "dark" &&
+                                                        "text-gray-300 hover:text-white",
+                                                )}
                                             >
                                                 {link.label}
                                             </Link>
