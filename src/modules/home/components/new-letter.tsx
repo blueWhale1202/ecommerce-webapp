@@ -7,7 +7,7 @@ export const NewLetter = () => {
             <h2 className="mb-2 text-3xl font-semibold">
                 Sign up for our newsletter
             </h2>
-            <p className="mb-4 text-sm text-gray-600">
+            <p className="text-muted-foreground mb-4 text-sm">
                 Be the first to know about our special offers, new product
                 launches, and events
             </p>
@@ -15,7 +15,7 @@ export const NewLetter = () => {
                 <Input
                     type="email"
                     placeholder="Email Address"
-                    className="rounded-r-none"
+                    className="rounded-r-none bg-white text-black"
                 />
                 <Button className="rounded-l-none">Sign Up</Button>
             </div>
