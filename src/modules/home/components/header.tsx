@@ -1,10 +1,10 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { Search, ShoppingBag } from "lucide-react";
+import { ShoppingBag } from "lucide-react";
 import Link from "next/link";
 import { NAVIGATION } from "../constants";
+import { SearchProduct } from "./search-product";
 
 type Props = {
     variant?: "light" | "dark";
@@ -41,17 +41,7 @@ export const Header = ({ variant = "light" }: Props) => {
                 </div>
 
                 <div className="flex items-center space-x-6">
-                    <div className="relative flex items-center">
-                        <Search className="text-muted-foreground absolute left-3 size-5" />
-                        <Input
-                            type="text"
-                            placeholder="Search"
-                            className={cn(
-                                "bg-white py-1 pr-4 pl-10",
-                                variant === "dark" && "bg-[#eff2f6] text-black",
-                            )}
-                        />
-                    </div>
+                    <SearchProduct />
                     <div className="flex items-center">
                         <Link href="/checkout" className="relative">
                             <ShoppingBag className="size-5" />

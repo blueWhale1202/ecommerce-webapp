@@ -10,7 +10,11 @@ import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { SORT_OPTIONS } from "../constants";
 
-export const SortProduct = () => {
+type Props = {
+    productsCount: number;
+};
+
+export const SortProduct = ({ productsCount }: Props) => {
     const [sort, setSort] = useState<string>("popular");
 
     return (
@@ -37,9 +41,7 @@ export const SortProduct = () => {
                 </DropdownMenu>
             </div>
             <p className="text-sm text-gray-600">
-                Showing
-                {/* Replace with real data */}
-                1003 Products
+                Showing {productsCount} Products
             </p>
         </div>
     );
