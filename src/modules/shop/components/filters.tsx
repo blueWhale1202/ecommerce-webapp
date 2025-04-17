@@ -1,58 +1,47 @@
 "use client";
 
+import { Skeleton } from "@/components/ui/skeleton";
+import { useFilters } from "@/hooks/use-filters";
 import { Check } from "lucide-react";
-import { useState } from "react";
+import { useListCategories } from "../apis/list-categries";
+import { COLORS } from "../constants";
 
-type Category = {
-    id: number;
-    name: string;
-};
-
-const categories: Category[] = [
-    { id: 1, name: "Jackets" },
-    { id: 2, name: "Fleece" },
-    { id: 3, name: "Sweatshirts & Hoodies" },
-    { id: 4, name: "Sweaters" },
-    { id: 5, name: "Shirts" },
-    { id: 6, name: "T-Shirts" },
-    { id: 7, name: "Pants & Jeans" },
-];
-
-type Color = {
-    value: string;
-};
-
-const colors: Color[] = [
-    { value: "#df9167" },
-    { value: "#7b61ff" },
-    { value: "#6fcf97" },
-    { value: "#56ccf2" },
-    { value: "#eb5757" },
-    { value: "#4f4f4f" },
-    { value: "#bb6bd9" },
-    { value: "#ffffff" },
-];
+type FilterKey = "categories" | "colors";
 
 export const FiltersProduct = () => {
-    const [filters, setFilters] = useState<string[]>([]);
+    const [filters, setFilters] = useFilters();
 
-    const onChange = (value: string) => {
-        setFilters((prev) => {
-            if (prev.includes(value)) {
-                return prev.filter((item) => item !== value);
-            }
-            return [...prev, value];
-        });
+    const { data: categories, error, isPending } = useListCategories();
+
+    const onChange = (key: FilterKey, value: string) => {
+        const isChecked = filters[key].includes(value);
+        const newFilters = isChecked
+            ? filters[key].filter((item) => item !== value)
+            : [...filters[key], value];
+
+        setFilters((prev) => ({
+            ...prev,
+            [key]: newFilters,
+        }));
     };
+
+    if (error) {
+        return <div>Error loading categories</div>;
+    }
+
+    if (!isPending && categories.length === 0) {
+        return <div>No categories available</div>;
+    }
 
     return (
         <div className="w-full shrink-0 md:w-64">
             <div className="mb-6 flex items-center justify-between">
                 <h2 className="text-xl font-bold">Filters</h2>
-                {filters.length > 0 && (
+                {(filters.categories.length > 0 ||
+                    filters.colors.length > 0) && (
                     <button
                         className="cursor-pointer text-sm text-gray-400 hover:underline"
-                        onClick={() => setFilters([])}
+                        onClick={() => setFilters(null)}
                     >
                         Clear filters
                     </button>
@@ -62,34 +51,44 @@ export const FiltersProduct = () => {
             <div className="mb-8">
                 <h3 className="mb-3 font-semibold">Categories</h3>
                 <div className="space-y-2">
-                    {categories.map((category) => (
-                        <label
-                            key={category.id}
-                            className="flex cursor-pointer items-center gap-3"
-                        >
-                            <input
-                                type="checkbox"
-                                name={category.name}
-                                value={category.name}
-                                hidden
-                                checked={filters.includes(category.name)}
-                                onChange={() => onChange(category.name)}
-                            />
-                            <div className="relative flex size-5 items-center justify-center border-1 border-black">
-                                {filters.includes(category.name) && (
-                                    <Check className="size-4 text-black" />
-                                )}
-                            </div>
-                            <span>{category.name}</span>
-                        </label>
-                    ))}
+                    {isPending ? (
+                        <CategoriesSkeleton />
+                    ) : (
+                        categories.map((category) => (
+                            <label
+                                key={category._id}
+                                className="flex cursor-pointer items-center gap-3"
+                            >
+                                <input
+                                    type="checkbox"
+                                    name={category.name}
+                                    value={category._id}
+                                    hidden
+                                    checked={filters.categories.includes(
+                                        category._id,
+                                    )}
+                                    onChange={() =>
+                                        onChange("categories", category._id)
+                                    }
+                                />
+                                <div className="relative flex size-5 items-center justify-center border-1 border-black">
+                                    {filters.categories.includes(
+                                        category._id,
+                                    ) && (
+                                        <Check className="size-4 text-black" />
+                                    )}
+                                </div>
+                                <span>{category.name}</span>
+                            </label>
+                        ))
+                    )}
                 </div>
             </div>
 
             <div>
                 <h3 className="mb-3 font-semibold">Color</h3>
                 <div className="flex flex-wrap gap-2">
-                    {colors.map((color) => (
+                    {COLORS.map((color) => (
                         <label
                             key={color.value}
                             className="flex cursor-pointer items-center gap-3"
@@ -99,21 +98,35 @@ export const FiltersProduct = () => {
                                 name={color.value}
                                 value={color.value}
                                 hidden
-                                checked={filters.includes(color.value)}
-                                onChange={() => onChange(color.value)}
+                                checked={filters.categories.includes(
+                                    color.value.slice(1),
+                                )}
+                                onChange={() =>
+                                    onChange("colors", color.value.slice(1))
+                                }
                             />
                             <div
                                 className="relative flex size-8 items-center justify-center rounded-full border border-black"
                                 style={{ backgroundColor: color.value }}
                             >
-                                {filters.includes(color.value) && (
-                                    <Check className="size-4 text-black" />
-                                )}
+                                {filters.colors.includes(
+                                    color.value.slice(1),
+                                ) && <Check className="size-4 text-black" />}
                             </div>
                         </label>
                     ))}
                 </div>
             </div>
         </div>
+    );
+};
+
+export const CategoriesSkeleton = () => {
+    return (
+        <>
+            {Array.from({ length: 6 }).map((_, index) => (
+                <Skeleton key={index} className="mb-2 h-7 w-full rounded-md" />
+            ))}
+        </>
     );
 };

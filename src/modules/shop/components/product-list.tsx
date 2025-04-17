@@ -1,120 +1,102 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatPrice } from "@/lib/utils";
+import { Loader } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
+import { useListProducts } from "../apis/list-products";
+import { NUM_ITEMS_PER_PAGE } from "../constants";
+import { ColorGroup } from "./color-group";
 import { SortProduct } from "./sort";
 
-type Product = {
-    id: number;
-    name: string;
-    price: number;
-    imageUrl: string;
-    size: string;
-};
-
-// size: "XS" | "S" | "M" | "L" | "XL" | "XXL"
-const products: Product[] = [
-    {
-        id: 1,
-        name: "Basic Tee",
-        price: 199000,
-        imageUrl: "https://source.unsplash.com/random/300x300?shirt",
-        size: "M",
-    },
-    {
-        id: 2,
-        name: "Denim Jacket",
-        price: 499000,
-        imageUrl: "https://source.unsplash.com/random/300x300?jacket",
-        size: "L",
-    },
-    {
-        id: 3,
-        name: "Sport Shorts",
-        price: 249000,
-        imageUrl: "https://source.unsplash.com/random/300x300?shorts",
-        size: "S",
-    },
-    {
-        id: 4,
-        name: "Hoodie Classic",
-        price: 399000,
-        imageUrl: "https://source.unsplash.com/random/300x300?hoodie",
-        size: "XL",
-    },
-    {
-        id: 5,
-        name: "Striped Polo",
-        price: 279000,
-        imageUrl: "https://source.unsplash.com/random/300x300?polo",
-        size: "M",
-    },
-    {
-        id: 6,
-        name: "Slim Fit Jeans",
-        price: 459000,
-        imageUrl: "https://source.unsplash.com/random/300x300?jeans",
-        size: "L",
-    },
-    {
-        id: 7,
-        name: "Cotton Shirt",
-        price: 229000,
-        imageUrl: "https://source.unsplash.com/random/300x300?shirt+cotton",
-        size: "XS",
-    },
-    {
-        id: 8,
-        name: "Running Tee",
-        price: 189000,
-        imageUrl: "https://source.unsplash.com/random/300x300?running+shirt",
-        size: "M",
-    },
-    {
-        id: 9,
-        name: "Puffer Vest",
-        price: 349000,
-        imageUrl: "https://source.unsplash.com/random/300x300?vest",
-        size: "XXL",
-    },
-];
-
 export const ProductList = () => {
+    const {
+        results: products,
+        status,
+        loadMore,
+        isLoading,
+    } = useListProducts();
+
+    if (!isLoading && products.length === 0) {
+        return <div>No products available</div>;
+    }
+
     return (
         <div className="flex-grow">
-            <SortProduct />
+            <SortProduct productsCount={products.length} />
 
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {products.map((product) => (
-                    <div
-                        key={product.id}
-                        className="overflow-hidden rounded-sm bg-white shadow-sm transition-shadow duration-200 hover:shadow-md"
-                    >
-                        <Link href={`/product/${product.id}`}>
-                            <Skeleton className="aspect-square rounded-b-none bg-[#c4c4c4]" />
-                        </Link>
-                        <div className="flex justify-between p-4">
-                            <div>
-                                <h3 className="font-bold">
-                                    <Link href={`/product/${product.id}`}>
-                                        {product.name}
-                                    </Link>
-                                </h3>
-                                <p>{formatPrice(product.price)}</p>
+                {status === "LoadingFirstPage" ? (
+                    <ProductListSkeleton />
+                ) : (
+                    products.map((product) => (
+                        <div
+                            key={product._id}
+                            className="overflow-hidden rounded-sm bg-white shadow-sm transition-shadow duration-200 hover:shadow-md"
+                        >
+                            <Link
+                                href={`/product/${product.slug}`}
+                                className="relative block h-0 w-full pt-[100%]"
+                            >
+                                <Skeleton className="absolute inset-0 rounded-b-none bg-[#c4c4c4]" />
+                                {product.imageUrl && (
+                                    <Image
+                                        src={product.imageUrl}
+                                        alt={product.name}
+                                        fill
+                                        priority
+                                        className="absolute inset-0 z-10 object-cover"
+                                    />
+                                )}
+                            </Link>
+                            <div className="flex justify-between p-4">
+                                <div>
+                                    <h3 className="font-bold">
+                                        <Link href={`/product/${product.slug}`}>
+                                            {product.name}
+                                        </Link>
+                                    </h3>
+                                    <p>{formatPrice(product.price)}</p>
+                                </div>
+                                <ColorGroup colors={product.colors} />
                             </div>
-                            <span className="text-gray-500">
-                                {product.size}
-                            </span>
                         </div>
-                    </div>
-                ))}
+                    ))
+                )}
             </div>
 
             <div className="mt-10 flex justify-center">
-                <Button variant="outline" size="lg" className="rounded-none">
-                    Load more products
+                <Button
+                    variant="outline"
+                    size="lg"
+                    className="rounded-none"
+                    disabled={isLoading}
+                    onClick={() => loadMore(NUM_ITEMS_PER_PAGE)}
+                    hidden={status === "Exhausted"}
+                >
+                    {isLoading && (
+                        <Loader className="text-muted-foreground mr-2 size-4 animate-spin" />
+                    )}
+                    Load more
                 </Button>
             </div>
         </div>
     );
+};
+
+export const ProductListSkeleton = () => {
+    return Array.from({ length: 6 }).map((_, index) => (
+        <div
+            key={index}
+            className="overflow-hidden rounded-sm bg-white shadow-sm transition-shadow duration-200 hover:shadow-md"
+        >
+            <Skeleton className="h-0 w-full rounded-b-none pt-[100%]" />
+            <div className="space-y-4 p-4">
+                <Skeleton className="mb-2 h-4 w-full rounded-md" />
+                <Skeleton className="h-4 w-1/2 rounded-md" />
+            </div>
+        </div>
+    ));
 };
