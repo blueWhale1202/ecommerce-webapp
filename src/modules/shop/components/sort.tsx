@@ -6,8 +6,8 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { SortOptions, useFilters } from "@/hooks/use-filters";
 import { ChevronDown } from "lucide-react";
-import { useState } from "react";
 import { SORT_OPTIONS } from "../constants";
 
 type Props = {
@@ -15,7 +15,18 @@ type Props = {
 };
 
 export const SortProduct = ({ productsCount }: Props) => {
-    const [sort, setSort] = useState<string>("popular");
+    const [filters, setFilters] = useFilters();
+
+    const label = SORT_OPTIONS.find(
+        (option) => option.value === filters.sort,
+    )?.label;
+
+    const onChange = (value: SortOptions) => {
+        setFilters((prev) => ({
+            ...prev,
+            sort: value,
+        }));
+    };
 
     return (
         <div className="mb-6 flex flex-col items-end justify-end gap-y-2">
@@ -24,7 +35,11 @@ export const SortProduct = ({ productsCount }: Props) => {
                     <DropdownMenuTrigger className="flex items-center rounded border border-gray-300 bg-white px-3 py-2 text-sm">
                         <span className="mr-2 text-gray-500">Sort By</span>
                         <span className="mr-1 font-medium capitalize">
-                            {sort}
+                            {
+                                SORT_OPTIONS.find(
+                                    (option) => option.value === filters.sort,
+                                )?.label
+                            }
                         </span>
                         <ChevronDown className="text-muted-foreground size-4" />
                     </DropdownMenuTrigger>
@@ -32,7 +47,7 @@ export const SortProduct = ({ productsCount }: Props) => {
                         {SORT_OPTIONS.map((option) => (
                             <DropdownMenuItem
                                 key={option.value}
-                                onClick={() => setSort(option.value)}
+                                onClick={() => onChange(option.value)}
                             >
                                 {option.label}
                             </DropdownMenuItem>

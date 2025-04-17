@@ -13,6 +13,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
+import { Skeleton } from "./ui/skeleton";
 
 type Props = {
     imageUrls: string[];
@@ -120,6 +121,22 @@ export const ImageCarousel = ({ imageUrls, className }: Props) => {
                 >
                     <ChevronRight className="size-4" />
                 </Button>
+            </div>
+        </div>
+    );
+};
+
+export const ImageCarouselSkeleton = () => {
+    return (
+        <div className="w-full">
+            <Skeleton className="h-[400px] w-full rounded-lg border" />
+            <div className="mt-4 flex items-center justify-center space-x-2 overflow-x-auto px-10 py-2">
+                {Array.from({ length: 6 }).map((_, index) => (
+                    <Skeleton
+                        key={index}
+                        className="h-16 w-16 rounded border-2"
+                    />
+                ))}
             </div>
         </div>
     );

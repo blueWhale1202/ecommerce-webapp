@@ -47,7 +47,7 @@ export const seed = mutation({
             const id = await ctx.db.insert("categories", {
                 name,
                 slug: name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
-                createdAt: Date.now(),
+                updatedAt: Date.now(),
             });
             categoryIds.push(id);
         }
@@ -80,7 +80,7 @@ export const seed = mutation({
                 modelInfo: "Height: 189 cm / 6'2\", wears size L",
                 isPublished: true,
                 sold,
-                createdAt: Date.now(),
+                updatedAt: Date.now(),
             });
 
             // --- Insert product variants (color × size) ---
@@ -93,7 +93,7 @@ export const seed = mutation({
                         sku: `SKU-${slug.slice(0, 6)}-${color.slice(1)}-${size}`,
                         quantity: faker.number.int({ min: 0, max: 500 }),
                         price: undefined,
-                        createdAt: Date.now(),
+                        updatedAt: Date.now(),
                     });
                 }
             }

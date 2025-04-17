@@ -1,12 +1,17 @@
 "use client";
 
-import { ImageCarousel } from "@/components/image-carousel";
+import {
+    ImageCarousel,
+    ImageCarouselSkeleton,
+} from "@/components/image-carousel";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn, formatPrice } from "@/lib/utils";
 import { Check, Heart, Minus, Plus, Share2 } from "lucide-react";
 import Link from "next/link";
 import { useImmer } from "use-immer";
 import { useGetProduct } from "../apis/get";
+import { SIZES } from "../constants";
 
 type Props = {
     slug: string;
@@ -21,7 +26,7 @@ export const ProductDetails = ({ slug }: Props) => {
     });
 
     if (isPending) {
-        return <div>Loading...</div>;
+        return <ProductDetailsSkeleton />;
     }
 
     if (error) {
@@ -31,6 +36,10 @@ export const ProductDetails = ({ slug }: Props) => {
     if (!product) {
         return <div>Product not found</div>;
     }
+
+    console.log("product", product._id);
+    console.log("colorMap", product.colorMap);
+    console.log("order.color", order.color);
 
     return (
         <div className="mx-auto my-24 flex max-w-7xl flex-col gap-8 p-6 md:flex-row">
@@ -65,12 +74,18 @@ export const ProductDetails = ({ slug }: Props) => {
                                 <div key={color} className="relative h-10 w-10">
                                     <button
                                         key={color}
-                                        className="absolute h-10 w-10 rounded-full border border-gray-300 transition-all duration-200 ease-in-out hover:scale-105"
+                                        className="absolute h-10 w-10 rounded-full border border-gray-300 transition-all duration-200 ease-in-out hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50"
                                         style={{ backgroundColor: color }}
                                         onClick={() =>
                                             setOrder((draft) => {
                                                 draft.color = color;
                                             })
+                                        }
+                                        disabled={
+                                            !!order.size &&
+                                            !product.sizeMap[
+                                                order.size
+                                            ]?.includes(color)
                                         }
                                     />
 
@@ -85,24 +100,36 @@ export const ProductDetails = ({ slug }: Props) => {
                     <div>
                         <h3 className="mb-2 text-gray-500">Size</h3>
                         <div className="grid grid-cols-7 gap-2">
-                            {product.sizes.map((size) => (
-                                <button
-                                    key={size}
-                                    className={cn(
-                                        "rounded-md border border-gray-300 px-3 py-2",
-                                        order.size === size
-                                            ? "bg-gray-200 font-semibold"
-                                            : "hover:bg-gray-100",
-                                    )}
-                                    onClick={() =>
-                                        setOrder((draft) => {
-                                            draft.size = size;
-                                        })
-                                    }
-                                >
-                                    {size}
-                                </button>
-                            ))}
+                            {SIZES.map((size) => {
+                                if (!product.sizes.includes(size)) {
+                                    return null;
+                                }
+                                return (
+                                    <Button
+                                        key={size}
+                                        variant="outline"
+                                        className={cn(
+                                            "rounded-none hover:bg-gray-900 hover:text-white disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400",
+                                            order.size === size
+                                                ? "bg-gray-900 text-white"
+                                                : "text-gray-900",
+                                        )}
+                                        onClick={() =>
+                                            setOrder((draft) => {
+                                                draft.size = size;
+                                            })
+                                        }
+                                        disabled={
+                                            !!order.color &&
+                                            !product.colorMap[
+                                                order.color
+                                            ]?.includes(size)
+                                        }
+                                    >
+                                        {size}
+                                    </Button>
+                                );
+                            })}
                         </div>
                     </div>
 
@@ -114,15 +141,15 @@ export const ProductDetails = ({ slug }: Props) => {
                         {product.modelInfo}
                     </div>
 
-                    <div className="flex items-end justify-between gap-x-4">
-                        <Button size="lg" className="w-full">
+                    <div className="flex w-full items-end justify-between gap-x-4">
+                        <Button size="lg" className="w-2/3 rounded-none">
                             Add to Cart - {formatPrice(product.price)}
                         </Button>
 
                         <div className="flex items-center justify-between">
                             <div>
                                 <h3 className="text-gray-500">Quantity</h3>
-                                <div className="mt-1 flex h-10 rounded-md border border-gray-300">
+                                <div className="mt-1 flex h-10 rounded-none border border-gray-300">
                                     <button
                                         className="flex cursor-pointer items-center justify-center px-4 py-2"
                                         onClick={() =>
@@ -158,6 +185,58 @@ export const ProductDetails = ({ slug }: Props) => {
                         <Link href="#" className="ml-2 underline">
                             Free Returns
                         </Link>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export const ProductDetailsSkeleton = () => {
+    return (
+        <div className="mx-auto my-24 flex w-full max-w-7xl flex-col gap-8 p-6 md:flex-row">
+            <div className="md:w-1/2">
+                <ImageCarouselSkeleton />
+            </div>
+
+            <div className="md:w-1/2">
+                <div className="space-y-6">
+                    <Skeleton className="h-8 w-1/2" />
+
+                    <Skeleton className="h-8 w-1/3" />
+
+                    <Skeleton className="h-16 w-full" />
+                    <div>
+                        <h3 className="mb-2 text-gray-500">Color</h3>
+                        <div className="flex space-x-2">
+                            <Skeleton className="h-10 w-10 rounded-full border border-gray-300" />
+                            <Skeleton className="h-10 w-10 rounded-full border border-gray-300" />
+                            <Skeleton className="h-10 w-10 rounded-full border border-gray-300" />
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 className="mb-2 text-gray-500">Size</h3>
+                        <div className="grid grid-cols-7 gap-2">
+                            {Array.from({ length: 7 }).map((_, index) => (
+                                <Skeleton
+                                    key={index}
+                                    className="h-10 w-full rounded-md border border-gray-300"
+                                />
+                            ))}
+                        </div>
+                    </div>
+
+                    <Link
+                        href="#"
+                        className="text-muted-foreground block text-sm underline"
+                    >
+                        Size & Fit Guide
+                    </Link>
+
+                    <div className="flex items-end justify-between gap-x-4">
+                        <Skeleton className="h-10 w-1/2" />
+                        <Skeleton className="h-10 w-1/3" />
                     </div>
                 </div>
             </div>

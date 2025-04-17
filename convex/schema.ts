@@ -8,7 +8,7 @@ export default defineSchema({
         name: v.string(),
         avatarUrl: v.optional(v.string()),
         role: v.union(v.literal("user"), v.literal("admin")),
-        createdAt: v.number(),
+        updatedAt: v.number(),
     }).index("by_clerkId", ["clerkId"]),
 
     addresses: defineTable({
@@ -20,13 +20,13 @@ export default defineSchema({
         country: v.string(),
         zipCode: v.string(),
         isDefault: v.boolean(),
-        createdAt: v.number(),
+        updatedAt: v.number(),
     }).index("by_user_id", ["userId"]),
 
     categories: defineTable({
         name: v.string(),
         slug: v.string(),
-        createdAt: v.number(),
+        updatedAt: v.number(),
     }).index("by_slug", ["slug"]),
 
     products: defineTable({
@@ -40,7 +40,7 @@ export default defineSchema({
         modelInfo: v.optional(v.string()),
         isPublished: v.boolean(),
         sold: v.optional(v.number()),
-        createdAt: v.number(),
+        updatedAt: v.number(),
     })
         .index("by_slug", ["slug"])
         .index("by_name", ["name"])
@@ -48,7 +48,7 @@ export default defineSchema({
         .index("by_category_color", ["categoryId", "colors"])
         .index("by_name_category_color", ["name", "categoryId", "colors"])
         .index("by_price", ["price"])
-        .index("by_createdAt", ["createdAt"])
+        .index("by_updatedAt", ["updatedAt"])
         .index("by_sold", ["sold"]),
 
     productImages: defineTable({
@@ -65,18 +65,22 @@ export default defineSchema({
         sku: v.string(),
         quantity: v.number(),
         price: v.optional(v.number()),
-        createdAt: v.number(),
+        updatedAt: v.number(),
     }).index("by_product_id", ["productId"]),
 
     cartItems: defineTable({
-        userId: v.id("users"),
+        userId: v.optional(v.id("users")),
+        sessionId: v.optional(v.string()),
         variantId: v.id("productVariants"),
         quantity: v.number(),
-        createdAt: v.number(),
-    }).index("by_user_id", ["userId"]),
+        updatedAt: v.number(),
+    })
+        .index("by_user_id", ["userId"])
+        .index("by_session_id", ["sessionId"]),
 
     orders: defineTable({
-        userId: v.id("users"),
+        userId: v.optional(v.id("users")),
+        sessionId: v.optional(v.string()),
         totalAmount: v.number(),
         status: v.union(
             v.literal("pending"),
@@ -93,8 +97,10 @@ export default defineSchema({
             v.literal("paypal"),
             v.literal("apple_pay"),
         ),
-        createdAt: v.number(),
-    }).index("by_user_id", ["userId"]),
+        updatedAt: v.number(),
+    })
+        .index("by_user_id", ["userId"])
+        .index("by_session_id", ["sessionId"]),
 
     orderItems: defineTable({
         orderId: v.id("orders"),
@@ -112,7 +118,7 @@ export default defineSchema({
         title: v.string(),
         description: v.string(),
         rating: v.number(),
-        createdAt: v.number(),
+        updatedAt: v.number(),
     }).index("by_product_id", ["productId"]),
 
     reviewVotes: defineTable({
@@ -124,7 +130,7 @@ export default defineSchema({
     wishlistItems: defineTable({
         userId: v.id("users"),
         productId: v.id("products"),
-        createdAt: v.number(),
+        updatedAt: v.number(),
     }).index("by_user_id", ["userId"]),
 
     coupons: defineTable({
