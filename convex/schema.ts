@@ -66,7 +66,9 @@ export default defineSchema({
         quantity: v.number(),
         price: v.optional(v.number()),
         updatedAt: v.number(),
-    }).index("by_product_id", ["productId"]),
+    })
+        .index("by_product_id", ["productId"])
+        .index("by_product_color_size", ["productId", "color", "size"]),
 
     cartItems: defineTable({
         userId: v.optional(v.id("users")),
