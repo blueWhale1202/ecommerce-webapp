@@ -1,7 +1,8 @@
 import { asyncMap } from "convex-helpers";
 import { filter } from "convex-helpers/server/filter";
+import { getManyFrom } from "convex-helpers/server/relationships";
 import { paginationOptsValidator } from "convex/server";
-import { v } from "convex/values";
+import { ConvexError, v } from "convex/values";
 import { query } from "./_generated/server";
 
 export const list = query({
@@ -62,6 +63,33 @@ export const list = query({
                     imageUrl: productImages[index],
                 };
             }),
+        };
+    },
+});
+
+export const get = query({
+    args: { slug: v.string() },
+    handler: async (ctx, { slug }) => {
+        const product = await ctx.db
+            .query("products")
+            .withIndex("by_slug", (q) => q.eq("slug", slug))
+            .first();
+
+        if (!product) {
+            throw new ConvexError("Product not found");
+        }
+
+        const imageUrls = await getManyFrom(
+            ctx.db,
+            "productImages",
+            "by_product_id",
+            product._id,
+            "productId",
+        );
+
+        return {
+            ...product,
+            imageUrls: imageUrls.map((image) => image.url),
         };
     },
 });
