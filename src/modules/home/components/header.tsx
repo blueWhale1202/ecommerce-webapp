@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { ShoppingBag } from "lucide-react";
 import Link from "next/link";
 import { NAVIGATION } from "../constants";
+import { CartCount } from "./cart-count";
 import { SearchProduct } from "./search-product";
 
 type Props = {
@@ -43,16 +44,9 @@ export const Header = ({ variant = "light" }: Props) => {
                 <div className="flex items-center space-x-6">
                     <SearchProduct />
                     <div className="flex items-center">
-                        <Link href="/checkout" className="relative">
+                        <Link href="/cart" className="relative">
                             <ShoppingBag className="size-5" />
-                            <span
-                                className={cn(
-                                    "absolute -top-2 -right-2 flex size-4 items-center justify-center rounded-full bg-black text-xs text-white",
-                                    variant === "dark" && "bg-white text-black",
-                                )}
-                            >
-                                {/* Update with real data */}3
-                            </span>
+                            <CartCount variant={variant} />
                         </Link>
                     </div>
                     <Link

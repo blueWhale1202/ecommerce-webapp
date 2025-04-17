@@ -150,7 +150,9 @@ export const get = query({
     },
 });
 
-export function mapNormalize(map: Record<string, Set<string>>) {
+export function mapNormalize(
+    map: Record<string, Set<string>>,
+): Record<string, string[]> {
     return Object.entries(map).reduce(
         (acc, [key, values]) => ({
             ...acc,

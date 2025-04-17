@@ -6,9 +6,13 @@ import {
 } from "@/components/image-carousel";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { getGuestSessionId } from "@/lib/session";
 import { cn, formatPrice } from "@/lib/utils";
+import { useAddToCart } from "@/modules/carts/apis/add";
 import { Check, Heart, Minus, Plus, Share2 } from "lucide-react";
 import Link from "next/link";
+import { useEffect } from "react";
+import { toast } from "sonner";
 import { useImmer } from "use-immer";
 import { useGetProduct } from "../apis/get";
 import { SIZES } from "../constants";
@@ -25,6 +29,20 @@ export const ProductDetails = ({ slug }: Props) => {
         quantity: 1,
     });
 
+    const add = useAddToCart();
+
+    useEffect(() => {
+        if (!product) return;
+
+        const color = product.colors[0];
+        const size = product.colorMap[color][0];
+
+        setOrder((draft) => {
+            draft.color = color;
+            draft.size = size;
+        });
+    }, [product, setOrder]);
+
     if (isPending) {
         return <ProductDetailsSkeleton />;
     }
@@ -36,6 +54,27 @@ export const ProductDetails = ({ slug }: Props) => {
     if (!product) {
         return <div>Product not found</div>;
     }
+
+    const onAddToCart = () => {
+        add.mutate(
+            {
+                sessionId: getGuestSessionId(),
+                productId: product._id,
+                quantity: order.quantity,
+                size: order.size,
+                color: order.color,
+            },
+            {
+                onError(error) {
+                    console.error("Error adding to cart:", error);
+                    toast.error("Failed to add to cart. Please try again.");
+                },
+                onSuccess() {
+                    toast.success("Added to cart!");
+                },
+            },
+        );
+    };
 
     console.log("product", product._id);
     console.log("colorMap", product.colorMap);
@@ -142,7 +181,12 @@ export const ProductDetails = ({ slug }: Props) => {
                     </div>
 
                     <div className="flex w-full items-end justify-between gap-x-4">
-                        <Button size="lg" className="w-2/3 rounded-none">
+                        <Button
+                            size="lg"
+                            className="w-2/3 rounded-none"
+                            disabled={add.isPending}
+                            onClick={onAddToCart}
+                        >
                             Add to Cart - {formatPrice(product.price)}
                         </Button>
 
@@ -159,6 +203,7 @@ export const ProductDetails = ({ slug }: Props) => {
                                                 }
                                             })
                                         }
+                                        disabled={order.quantity <= 1}
                                     >
                                         <Minus className="h-4 w-4" />
                                     </button>
