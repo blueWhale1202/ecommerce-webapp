@@ -5,11 +5,11 @@ import { api } from "../../../../convex/_generated/api";
 import { NUM_ITEMS_PER_PAGE } from "../constants";
 
 export const useListProducts = () => {
-    const [{ categories, colors, search }] = useFilters();
+    const [{ categories, colors, search, sort }] = useFilters();
 
     const { status, isLoading, results, loadMore } = usePaginatedQuery(
         api.products.list,
-        { categories, colors, search },
+        { categories, colors, search, sort },
         { initialNumItems: NUM_ITEMS_PER_PAGE },
     );
 

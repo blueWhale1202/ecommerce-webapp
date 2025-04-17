@@ -69,7 +69,7 @@ export const ProductList = () => {
 
             <div className="mt-10 flex justify-center">
                 <Button
-                    variant="outline"
+                    variant="outline-link"
                     size="lg"
                     className="rounded-none"
                     disabled={isLoading}

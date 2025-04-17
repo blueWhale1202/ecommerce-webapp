@@ -3,6 +3,7 @@
 import { Input } from "@/components/ui/input";
 import { useFilters } from "@/hooks/use-filters";
 import { Search } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 
@@ -10,6 +11,10 @@ export const SearchProduct = () => {
     const [filters, setFilters] = useFilters();
     const [value, setValue] = useState(filters.search);
     const inputRef = useRef<HTMLInputElement>(null);
+
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const search = searchParams.get("search");
 
     useEffect(() => {
         setValue(filters.search);
@@ -24,8 +29,13 @@ export const SearchProduct = () => {
         onSearch(value);
     };
 
+    const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        router.push(`/shop?search=${search}`);
+    };
+
     return (
-        <div className="relative flex items-center">
+        <form className="relative flex items-center" onSubmit={onSubmit}>
             <Search className="text-muted-foreground absolute left-3 size-5" />
             <Input
                 ref={inputRef}
@@ -40,6 +50,6 @@ export const SearchProduct = () => {
                     inputRef.current?.select();
                 }}
             />
-        </div>
+        </form>
     );
 };

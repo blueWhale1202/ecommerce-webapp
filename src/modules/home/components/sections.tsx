@@ -19,7 +19,7 @@ export const Sections = () => {
                     </p>
                     <Button
                         asChild
-                        variant="outline"
+                        variant="outline-link"
                         size="lg"
                         className="mb-10 w-40 rounded-none"
                     >
@@ -60,7 +60,7 @@ export const Sections = () => {
                     </p>
                     <Button
                         asChild
-                        variant="outline"
+                        variant="outline-link"
                         size="lg"
                         className="mb-36 w-40 rounded-none"
                     >
