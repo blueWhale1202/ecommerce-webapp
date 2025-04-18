@@ -40,7 +40,7 @@ export const ProductList = () => {
                                 href={`/product/${product.slug}`}
                                 className="relative block h-0 w-full pt-[100%]"
                             >
-                                <Skeleton className="absolute inset-0 rounded-b-none bg-[#c4c4c4]" />
+                                <Skeleton className="absolute inset-0 rounded-b-none bg-gray-200" />
                                 {product.imageUrl && (
                                     <Image
                                         src={product.imageUrl}

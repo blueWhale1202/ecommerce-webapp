@@ -4,7 +4,7 @@ import { OrderInformation } from "@/modules/carts/components/order-info";
 export default async function CartPage() {
     return (
         <div className="mx-auto w-full max-w-7xl p-6">
-            <CartList />
+            <CartList showDetail />
             <OrderInformation />
         </div>
     );

@@ -80,6 +80,33 @@ export default defineSchema({
         .index("by_user_id", ["userId"])
         .index("by_session_id", ["sessionId"]),
 
+    checkoutSessions: defineTable({
+        sessionId: v.string(),
+        userId: v.optional(v.id("users")),
+
+        firstName: v.string(),
+        lastName: v.string(),
+        address: v.string(),
+        apartment: v.optional(v.string()),
+        city: v.optional(v.string()),
+        country: v.optional(v.string()),
+        zipCode: v.optional(v.string()),
+
+        shippingMethod: v.optional(
+            v.union(v.literal("ups_surepost"), v.literal("ups_ground")),
+        ),
+
+        paymentMethod: v.optional(
+            v.union(
+                v.literal("card"),
+                v.literal("paypal"),
+                v.literal("apple_pay"),
+            ),
+        ),
+
+        updatedAt: v.number(),
+    }).index("by_session_id", ["sessionId"]),
+
     orders: defineTable({
         userId: v.optional(v.id("users")),
         sessionId: v.optional(v.string()),
