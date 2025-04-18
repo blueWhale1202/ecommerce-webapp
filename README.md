@@ -36,7 +36,7 @@ Thank you for the opportunity to take on this technical challenge. Due to the ti
 ### 2. **Convex Optimization**
 
 - Convex has limitations with complex relational queries.
-- I spent significant time optimizing these queries using `convex-helpers`, enabling combined filtering, searching, and sorting across related tables (e.g., variants, colors, categories).
+- I spent significant time optimizing these queries using `convex-helpers`, enabling combined filtering, full-text search, sorting, and cursor-based pagination across related tables (e.g., variants, colors, categories). This resulted in a smooth and scalable experience even with large datasets.
 
 ### 3. **SEO and Product Variants UX**
 
@@ -60,6 +60,18 @@ Thank you for the opportunity to take on this technical challenge. Due to the ti
 - **UX Enhancements**: Embla Carousel, Skeleton Loaders, Sonner (Toasts)
 - **Utilities**: lucide-react (Icons), use-debounce, nuqs (Query param sync), uuid
 - **Testing/Dev Tools**: Faker.js, ESLint, Prettier, TypeScript 5
+
+## 📸 Screenshots
+
+| Page                    | Screenshot                                                       |
+| ----------------------- | ---------------------------------------------------------------- |
+| **Home (Landing Page)** | ![Home](./public/screenshots/home.png)                           |
+| **Shop (Product List)** | ![Shop](./public/screenshots/shop.png)                           |
+| **Product Detail**      | ![Product Detail](./public/screenshots/product-detail.png)       |
+| **Cart**                | ![Cart](./public/screenshots/cart.png)                           |
+| **Checkout – Address**  | ![Checkout Address](./public/screenshots/checkout-address.png)   |
+| **Checkout – Shipping** | ![Checkout Shipping](./public/screenshots/checkout-shipping.png) |
+| **Checkout – Payment**  | ![Checkout Payment](./public/screenshots/checkout-payment.png)   |
 
 ## 🔜 Features Planned But Not Implemented
 

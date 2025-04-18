@@ -38,35 +38,6 @@ export const BRANDS: Brand[] = [
     },
 ];
 
-// Shop
-
-// Women's
-// Men's
-// Kids'
-
-// Shoes
-
-// Equipment
-// By Activity
-// Gift Cards
-// Sale
-
-// Help
-
-// Help Center
-// Order Status
-// Size Chart
-// Returns & Warranty
-// Contact Us
-
-// About
-
-// About Us
-
-// Responsibility
-// Technology & Innovation
-// Explore our stories
-
 type FooterLink = {
     label: string;
     items: Navigation[];
