@@ -20,7 +20,7 @@ export const Sections = () => {
                         asChild
                         variant="outline-link"
                         size="lg"
-                        className="mb-10 w-40 rounded-md shadow"
+                        className="mb-10 w-40 rounded-none shadow"
                     >
                         <Link href="/shop">Shop All</Link>
                     </Button>
@@ -67,7 +67,7 @@ export const Sections = () => {
                         asChild
                         variant="outline-link"
                         size="lg"
-                        className="mb-36 w-40 rounded-md shadow"
+                        className="mb-36 w-40 rounded-none shadow"
                     >
                         <Link href="/shop">Shop All</Link>
                     </Button>
