@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import Image from "next/image";
 import Link from "next/link";
 import { BRANDS } from "../constants";
@@ -21,12 +20,18 @@ export const Sections = () => {
                         asChild
                         variant="outline-link"
                         size="lg"
-                        className="mb-10 w-40 rounded-none"
+                        className="mb-10 w-40 rounded-md shadow"
                     >
                         <Link href="/shop">Shop All</Link>
                     </Button>
                     <div className="mx-auto mb-8 aspect-[16/9] w-full max-w-5xl">
-                        <Skeleton className="size-full bg-[#c4c4c4]" />
+                        <Image
+                            src="/images/hero-2.jpg"
+                            alt="Better clothing for the planet"
+                            width={1920}
+                            height={512}
+                            className="size-full"
+                        />
                     </div>
                     <div className="flex h-16 items-center justify-center space-x-14">
                         {BRANDS.map((brand) => (
@@ -40,7 +45,7 @@ export const Sections = () => {
                                     alt={brand.name}
                                     width={200}
                                     height={50}
-                                    className="mx-2 size-auto rounded-none object-contain transition-all duration-300 ease-in-out hover:scale-105"
+                                    className="mx-2 size-auto rounded-md object-contain shadow transition-all duration-300 ease-in-out hover:scale-105"
                                 />
                             </Link>
                         ))}
@@ -62,14 +67,33 @@ export const Sections = () => {
                         asChild
                         variant="outline-link"
                         size="lg"
-                        className="mb-36 w-40 rounded-none"
+                        className="mb-36 w-40 rounded-md shadow"
                     >
                         <Link href="/shop">Shop All</Link>
                     </Button>
                     <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-3">
-                        <Skeleton className="h-[521px] flex-1 bg-[#c4c4c4]" />
-                        <Skeleton className="h-[521px] flex-1 -translate-y-20 bg-[#c4c4c4]" />
-                        <Skeleton className="h-[521px] flex-1 bg-[#c4c4c4]" />
+                        <Image
+                            src={"/images/hero-4.jpg"}
+                            alt="Our latest arrivals"
+                            width={368}
+                            height={521}
+                            className="h-[521px] flex-1 rounded-md object-cover shadow transition-all duration-300 ease-in-out hover:scale-105"
+                        />
+                        <Image
+                            src={"/images/hero-1.jpg"}
+                            alt="Our latest arrivals"
+                            width={368}
+                            height={521}
+                            className="h-[521px] flex-1 -translate-y-20 rounded-md object-cover shadow transition-all duration-300 ease-in-out hover:scale-105"
+                        />
+
+                        <Image
+                            src={"/images/hero-3.jpg"}
+                            alt="Our latest arrivals"
+                            width={368}
+                            height={521}
+                            className="h-[521px] flex-1 rounded-md object-cover shadow transition-all duration-300 ease-in-out hover:scale-105"
+                        />
                     </div>
                 </div>
             </section>

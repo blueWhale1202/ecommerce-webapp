@@ -145,9 +145,6 @@ export const get = query({
             0,
         );
 
-        console.log("cart items", results);
-        console.log("subtotal", subtotal);
-
         return { results, subtotal };
     },
 });

@@ -1,4 +1,5 @@
 import { ConfirmDialog } from "@/components/confirm-dialog";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Minus, Plus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -56,7 +57,7 @@ export const CartItem = ({ item }: Props) => {
                 className="border-b border-gray-200 pb-6"
             >
                 <div className="flex gap-4">
-                    <div className="h-24 w-24 shrink-0 bg-[#c4c4c4]">
+                    <div className="h-24 w-24 shrink-0 bg-gray-200">
                         <Link href={href}>
                             <Image
                                 src={item.image || "/placeholder.svg"}
@@ -123,5 +124,20 @@ export const CartItem = ({ item }: Props) => {
                 disabled={remove.isPending}
             />
         </>
+    );
+};
+
+export const CartItemSkeleton = () => {
+    return (
+        <div className="border-b border-gray-200 pb-6">
+            <div className="flex gap-4">
+                <Skeleton className="size-24 shrink-0" />
+                <div className="flex-grow space-y-2">
+                    <Skeleton className="h-6 w-1/3" />
+                    <Skeleton className="h-4 w-1/2" />
+                    <Skeleton className="h-4 w-1/2" />
+                </div>
+            </div>
+        </div>
     );
 };
